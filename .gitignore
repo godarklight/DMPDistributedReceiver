@@ -1,0 +1,7 @@
+*.orig
+*.dll
+*.userprefs
+DMPDistributedReceiver/bin/*
+DMPDistributedReceiver/obj/*
+*.suo
+*.csproj.user
