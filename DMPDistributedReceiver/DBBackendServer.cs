@@ -14,6 +14,8 @@ namespace DMPDistributedReceiver
         private Dictionary<string, RelayClient> remoteClients;
         private ReceiverSettings settings;
         private NetworkServer<DBClient> networkServer;
+        //For printing
+        private List<DBClient> networkClients = new List<DBClient>();
         private int freeID = 0;
 
         public DBBackendServer(ReceiverSettings settings)
@@ -37,6 +39,7 @@ namespace DMPDistributedReceiver
                 networkHandler.SetDisconnectCallback(HandleDisconnectCallback);
                 networkHandler.SetMessageCallback((int)MessageType.HEARTBEAT, HandleHeartbeat);
                 networkServer = new NetworkServer<DBClient>(networkHandler, false);
+
                 networkServer.Start(new IPEndPoint(IPAddress.IPv6Any, settings.dbBackendPort));
             }
         }
@@ -44,14 +47,30 @@ namespace DMPDistributedReceiver
         private void HandleConnectCallback(NetworkClient<DBClient> client, TcpClient tcpClient)
         {
             client.stateObject = new DBClient();
-            client.stateObject.remoteAddress = (IPEndPoint)tcpClient.Client.RemoteEndPoint;
+            client.stateObject.remoteIP = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString();
+            if (client.stateObject.remoteIP.StartsWith("::ffff:"))
+            {
+                client.stateObject.remoteIP = client.stateObject.remoteIP.Substring(7);
+            }
+            client.stateObject.remotePort = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port;
             client.stateObject.clientID = Interlocked.Increment(ref freeID);
             SendCurrentState(client);
-            Console.WriteLine("DATABASE: Connect from " +  client.stateObject.clientID + ", Endpoint: " + client.stateObject.remoteAddress + ", Total: " + (networkServer.ConnectCount + 1));
+            lock (networkClients)
+            {
+                networkClients.Add(client.stateObject);
+            }
+            Console.WriteLine("DATABASE: Connect from " +  client.stateObject.clientID + ", Endpoint: " + client.stateObject.remoteIP + " port " + client.stateObject.remotePort + ", Total: " + (networkServer.ConnectCount + 1));
         }
 
         private void HandleDisconnectCallback(NetworkClient<DBClient> client, Exception exception)
         {
+            lock (networkClients)
+            {
+                if (networkClients.Contains(client.stateObject))
+                {
+                    networkClients.Remove(client.stateObject);
+                }
+            }
             Console.WriteLine("DATABASE: Disconnect from " + client.stateObject.clientID + ", Total: " + (networkServer.ConnectCount - 1));
         }
 
@@ -117,6 +136,17 @@ namespace DMPDistributedReceiver
         public void Disconnect(string serverID, ReporterClient client)
         {
             networkServer.QueueToAll(new NetworkMessage((int)MessageType.DISCONNECT, GetDisconnectMessageBytes(serverID, client)));
+        }
+
+        public void PrintClients()
+        {
+            lock (networkClients)
+            {
+                foreach (DBClient client in networkClients)
+                {
+                    Console.WriteLine("@DB " + client.clientID + ": " + client.remoteIP + " port " + client.remotePort);
+                }
+            }
         }
 
         private byte[] GetConnectMessageBytes(string serverID, ReporterClient client)

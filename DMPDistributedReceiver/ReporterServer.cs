@@ -47,6 +47,10 @@ namespace DMPDistributedReceiver
         {
             client.stateObject = new ReporterClient();
             client.stateObject.remoteIP = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString();
+            if (client.stateObject.remoteIP.StartsWith("::ffff:"))
+            {
+                client.stateObject.remoteIP = client.stateObject.remoteIP.Substring(7);
+            }
             client.stateObject.remotePort = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port;
             client.stateObject.clientID = Interlocked.Increment(ref freeID);
             Console.WriteLine("RECEIVER: Connect from " +  client.stateObject.clientID + ", Endpoint: " + client.stateObject.remoteIP + ":" + client.stateObject.remotePort + ", Total: " + (networkServer.ConnectCount + 1));

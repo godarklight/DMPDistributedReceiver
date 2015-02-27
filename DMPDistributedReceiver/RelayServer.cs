@@ -123,6 +123,10 @@ namespace DMPDistributedReceiver
         {
             client.stateObject = new RelayClient();
             client.stateObject.remoteIP = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Address.ToString();
+            if (client.stateObject.remoteIP.StartsWith("::ffff:"))
+            {
+                client.stateObject.remoteIP = client.stateObject.remoteIP.Substring(7);
+            }
             client.stateObject.remotePort = ((IPEndPoint)tcpClient.Client.RemoteEndPoint).Port;
             client.QueueNetworkMessage(new NetworkMessage((int)MessageType.INFO, GetServerInfoBytes()));
             Console.WriteLine("RELAY: Connect from endpoint " + client.stateObject.remoteIP + ":" + client.stateObject.remotePort + ", Total: " + (networkServer.ConnectCount + 1));
@@ -550,8 +554,7 @@ namespace DMPDistributedReceiver
 
         public void PrintTree()
         {
-            Console.WriteLine();
-            Console.WriteLine("@LOCAL " + settings.reporterHash);
+            Console.WriteLine("@LOCAL " + settings.reporterHash + ", " + localClients.Count + " clients, " + remoteRelays.Count + " relays.");
             foreach (ReporterClient client in localClients.Values)
             {
                 if (client.lastMessage == null)
@@ -560,7 +563,7 @@ namespace DMPDistributedReceiver
                 }
                 else
                 {
-                    Console.WriteLine("  +" + client.clientID + " " + client.lastMessage.gameAddress + ":" + client.lastMessage.gamePort);
+                    Console.WriteLine("  +" + client.clientID + " " + client.lastMessage.gameAddress + ":" + client.lastMessage.gamePort  + ", " + client.lastMessage.players.Length + " players.");
                 }
             }
             foreach (RelayClient client in remoteRelays.Values)
@@ -572,7 +575,7 @@ namespace DMPDistributedReceiver
         private void PrintRecursive(RelayClient currentClient, int depth)
         {
             string prefix = "".PadLeft(depth * 2);
-            Console.WriteLine(prefix + "@" + currentClient.relayHash);
+            Console.WriteLine(prefix + "@" + currentClient.relayHash + ", " + currentClient.remoteClients.Count + " clients, " + currentClient.remoteRelays.Count + " relays.");
             foreach (ReporterClient client in currentClient.remoteClients.Values)
             {
                 if (client.lastMessage == null)
@@ -581,7 +584,7 @@ namespace DMPDistributedReceiver
                 }
                 else
                 {
-                    Console.WriteLine(prefix + "  +" + client.clientID + " " + client.lastMessage.gameAddress + ":" + client.lastMessage.gamePort);
+                    Console.WriteLine(prefix + "  +" + client.clientID + " " + client.lastMessage.gameAddress + ":" + client.lastMessage.gamePort  + ", " + client.lastMessage.players.Length + " players.");
                 }
             }
             foreach (RelayClient client in currentClient.remoteRelays.Values)

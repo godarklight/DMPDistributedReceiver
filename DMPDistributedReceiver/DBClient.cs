@@ -6,7 +6,8 @@ namespace DMPDistributedReceiver
     public class DBClient
     {
         public int clientID;
-        public IPEndPoint remoteAddress;
+        public string remoteIP;
+        public int remotePort;
     }
 }
 

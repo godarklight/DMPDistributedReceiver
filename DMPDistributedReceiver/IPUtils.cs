@@ -7,6 +7,10 @@ namespace DMPDistributedReceiver
     {
         public static IPEndPoint[] FindEndpoint(string connectionString)
         {
+            if (connectionString.StartsWith("::ffff:"))
+            {
+                connectionString = connectionString.Substring(7);
+            }
             if (!connectionString.Contains(":") || connectionString.EndsWith("]"))
             {
                 connectionString += ":9003";
