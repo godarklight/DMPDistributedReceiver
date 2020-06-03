@@ -3,5 +3,8 @@
 *.userprefs
 DMPDistributedReceiver/bin/*
 DMPDistributedReceiver/obj/*
+DMPDistributedReceiver/ReceiverSettings.xml
 *.suo
 *.csproj.user
+build.zip
+build/

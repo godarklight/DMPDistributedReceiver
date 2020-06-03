@@ -1,0 +1,9 @@
+[submodule "External/BinarySerialiser"]
+	path = External/BinarySerialiser
+	url = https://github.com/godarklight/BinarySerialiser.git
+[submodule "External/MessageStream2"]
+	path = External/MessageStream2
+	url = https://github.com/godarklight/MessageStream2.git
+[submodule "External/DarkNetwork"]
+	path = External/DarkNetwork
+	url = https://github.com/godarklight/DarkNetwork.git

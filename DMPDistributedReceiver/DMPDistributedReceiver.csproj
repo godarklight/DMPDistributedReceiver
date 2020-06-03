@@ -1,56 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\External\BinarySerialiser\DotNet\MessageWriter.csproj" />
+    <ProjectReference Include="..\External\MessageStream2\DotNet\MessageWriter2.csproj" />
+    <ProjectReference Include="..\External\DarkNetwork\DotNet\DarkNetwork.csproj" />
+  </ItemGroup>
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{38E24A44-CCDE-4716-B6EA-119DA9F5DEEB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>DMPDistributedReceiver</RootNamespace>
-    <AssemblyName>DMPDistributedReceiver</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Externalconsole>true</Externalconsole>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="DarkNetwork">
-      <HintPath>..\DarkNetwork.dll</HintPath>
-    </Reference>
-    <Reference Include="MessageWriter2">
-      <HintPath>..\MessageWriter2.dll</HintPath>
-    </Reference>
-    <Reference Include="MessageWriter">
-      <HintPath>..\MessageWriter.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="MainClass.cs" />
-    <Compile Include="ReceiverSettings.cs" />
-    <Compile Include="ReporterServer.cs" />
-    <Compile Include="RelayServer.cs" />
-    <Compile Include="DBBackendServer.cs" />
-    <Compile Include="ReporterClient.cs" />
-    <Compile Include="ReportingMessage.cs" />
-    <Compile Include="IPUtils.cs" />
-    <Compile Include="RelayClient.cs" />
-    <Compile Include="DBClient.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+
 </Project>
