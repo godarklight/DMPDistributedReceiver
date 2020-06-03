@@ -22,20 +22,7 @@ namespace DMPDistributedReceiver
             relayServer.Start();
             ReporterServer reporterServer = new ReporterServer(receiverSettings, relayServer);
             reporterServer.Start();
-            DetectConsole(relayServer, dbServer);
-        }
-
-        private void DetectConsole(RelayServer relayServer, DBBackendServer dbServer)
-        {
-            bool consoleOK = Console.In != null;
-            if (consoleOK)
-            {
-                InteractiveConsole(relayServer, dbServer);
-            }
-            else
-            {
-                NoConsole();
-            }
+            InteractiveConsole(relayServer, dbServer);
         }
 
         private void InteractiveConsole(RelayServer relayServer, DBBackendServer dbServer)
@@ -43,26 +30,33 @@ namespace DMPDistributedReceiver
             bool running = true;
             while (running)
             {
-                string line = Console.ReadLine().ToLower();
-                bool handled = false;
-                if (line == "q")
+                try
                 {
-                    handled = true;
-                    running = false;
+                    string line = Console.ReadLine().ToLower();
+                    bool handled = false;
+                    if (line == "q")
+                    {
+                        handled = true;
+                        running = false;
+                    }
+                    if (line == "p")
+                    {
+                        handled = true;
+                        relayServer.PrintTree();
+                    }
+                    if (line == "d")
+                    {
+                        handled = true;
+                        dbServer.PrintClients();
+                    }
+                    if (!handled)
+                    {
+                        Console.WriteLine("Commands: q for quit, p for print server/relay tree, d for connected DB clients");
+                    }
                 }
-                if (line == "p")
+                catch
                 {
-                    handled = true;
-                    relayServer.PrintTree();
-                }
-                if (line == "d")
-                {
-                    handled = true;
-                    dbServer.PrintClients();
-                }
-                if (!handled)
-                {
-                    Console.WriteLine("Commands: q for quit, p for print server/relay tree, d for connected DB clients");
+                    NoConsole();
                 }
             }
         }
