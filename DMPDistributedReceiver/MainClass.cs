@@ -22,21 +22,12 @@ namespace DMPDistributedReceiver
             relayServer.Start();
             ReporterServer reporterServer = new ReporterServer(receiverSettings, relayServer);
             reporterServer.Start();
-            InteractiveConsole(relayServer, dbServer);
+            DetectConsole(relayServer, dbServer);
         }
 
-        /* TODO: Divert all Console.WriteLine calls.
         private void DetectConsole(RelayServer relayServer, DBBackendServer dbServer)
         {
-            bool consoleOK = true;
-            try
-            {
-                Console.WriteLine();
-            }
-            catch
-            {
-                consoleOK = false;
-            }
+            bool consoleOK = Console.In != null;
             if (consoleOK)
             {
                 InteractiveConsole(relayServer, dbServer);
@@ -46,7 +37,6 @@ namespace DMPDistributedReceiver
                 NoConsole();
             }
         }
-        */
 
         private void InteractiveConsole(RelayServer relayServer, DBBackendServer dbServer)
         {
