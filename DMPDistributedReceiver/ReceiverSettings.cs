@@ -19,7 +19,7 @@ namespace DMPDistributedReceiver
             if (!File.Exists(fileName))
             {
                 otherReporters.Add("server.game.api.d-mp.org:9002");
-                otherReporters.Add("godarklight.info.tm:9002");
+                otherReporters.Add("godarklight.privatedns.org:9002");
                 SaveToFile(fileName);
             }
             XmlDocument xmlDoc = new XmlDocument();
